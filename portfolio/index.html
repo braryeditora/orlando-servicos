@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portfólio | Orlando Serviços</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap"
+        rel="stylesheet" />
+
+    <style>
+        :root {
+            --black: #070707;
+            --red: #E8321A;
+            --red2: #FF4528;
+            --white: #F7F4F0;
+            --grey: #141414;
+            --grey2: #1E1E1E;
+            --muted: #8a8a8a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            background: var(--black);
+            color: var(--white);
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none
+        }
+
+        .grain {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: .045;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            z-index: 0;
+        }
+
+        .wrap {
+            position: relative;
+            z-index: 1;
+            width: min(1180px, 90%);
+            margin: 0 auto;
+        }
+
+        header {
+            padding: 34px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #1d1d1d;
+        }
+
+        .brand {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 28px;
+            letter-spacing: .08em;
+        }
+
+        nav {
+            display: flex;
+            gap: 24px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        nav a:hover {
+            color: var(--red)
+        }
+
+        .hero {
+            padding: 90px 0 70px;
+        }
+
+        .kicker {
+            color: var(--red);
+            font-size: 12px;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(72px, 12vw, 150px);
+            line-height: .86;
+            letter-spacing: .01em;
+            max-width: 900px;
+        }
+
+        h1 em {
+            color: var(--red);
+            font-style: normal;
+            display: block;
+        }
+
+        .hero p {
+            max-width: 620px;
+            margin-top: 26px;
+            color: var(--muted);
+            font-size: 16px;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        .paths {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2px;
+            margin: 30px 0 90px;
+        }
+
+        .path {
+            background: var(--grey);
+            padding: 42px;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #202020;
+            transition: .25s;
+        }
+
+        .path:hover {
+            background: #180800;
+            border-color: var(--red);
+            transform: translateY(-4px);
+        }
+
+        .path::after {
+            content: attr(data-label);
+            position: absolute;
+            right: -8px;
+            bottom: -34px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 150px;
+            color: rgba(232, 50, 26, .08);
+            line-height: 1;
+        }
+
+        .path-number {
+            color: var(--red);
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 34px;
+            margin-bottom: 22px;
+        }
+
+        .path h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 54px;
+            line-height: .9;
+            margin-bottom: 20px;
+        }
+
+        .path p {
+            color: var(--muted);
+            line-height: 1.65;
+            max-width: 430px;
+            font-weight: 300;
+        }
+
+        .btn {
+            margin-top: 28px;
+            display: inline-flex;
+            width: max-content;
+            background: var(--red);
+            color: var(--black);
+            font-weight: 700;
+            padding: 13px 20px;
+            border-radius: 999px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+        }
+
+        .section {
+            margin-bottom: 90px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 28px;
+            color: var(--red);
+            font-size: 12px;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+        }
+
+        .section-title::after {
+            content: "";
+            height: 1px;
+            background: #242424;
+            flex: 1;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 14px;
+        }
+
+        .card {
+            background: var(--grey);
+            border: 1px solid #202020;
+            padding: 28px;
+            min-height: 210px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: .25s;
+        }
+
+        .card:hover {
+            border-color: var(--red);
+            transform: translateY(-3px);
+            background: var(--grey2);
+        }
+
+        .tag {
+            color: var(--red);
+            font-size: 11px;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .card h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 34px;
+            line-height: 1;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.55;
+            font-weight: 300;
+        }
+
+        .card span {
+            margin-top: 20px;
+            color: var(--red);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .cta {
+            margin: 110px 0 70px;
+            background: var(--red);
+            color: var(--black);
+            padding: 54px;
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+            align-items: flex-end;
+        }
+
+        .cta h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 70px;
+            line-height: .9;
+        }
+
+        .cta p {
+            max-width: 480px;
+            color: rgba(7, 7, 7, .65);
+            line-height: 1.6;
+            margin-top: 16px;
+        }
+
+        .cta a {
+            background: var(--black);
+            color: var(--white);
+            padding: 15px 24px;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        footer {
+            padding: 30px 0 50px;
+            color: #555;
+            font-size: 12px;
+            border-top: 1px solid #1d1d1d;
+        }
+
+        @media(max-width:780px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 18px
+            }
+
+            nav {
+                flex-wrap: wrap
+            }
+
+            .paths {
+                grid-template-columns: 1fr
+            }
+
+            .cta {
+                flex-direction: column;
+                align-items: flex-start
+            }
+
+            .cta h2 {
+                font-size: 52px
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="grain"></div>
+
+    <main class="wrap">
+        <header>
+            <a class="brand" href="/">ORLANDO SERVIÇOS</a>
+            <nav>
+                <a href="/">Início</a>
+                <a href="/#solucoes">Soluções</a>
+                <a href="/portfolio/">Portfólio</a>
+                <a href="https://ghostwriting-six.vercel.app/">Ghostwriting</a>
+                <a href="/#contato">Contato</a>
+            </nav>
+        </header>
+
+        <section class="hero">
+            <div class="kicker">Portfólio · Estratégia · Autoridade</div>
+            <h1>PROJETOS COM<br><em>FORMA E PRESENÇA.</em></h1>
+            <p>
+                Uma seleção de apresentações, páginas e experiências digitais criadas para transformar conhecimento,
+                autoridade e posicionamento em ativos comerciais visíveis.
+            </p>
+        </section>
+
+        <section class="paths">
+            <a class="path" href="#apresentacoes" data-label="01">
+                <div>
+                    <div class="path-number">01</div>
+                    <h2>Apresentações<br>criadas</h2>
+                    <p>Decks, palestras, workshops e propostas estruturadas com narrativa, clareza visual e intenção
+                        comercial.</p>
+                </div>
+                <span class="btn">Ver apresentações</span>
+            </a>
+
+            <a class="path" href="#sites" data-label="02">
+                <div>
+                    <div class="path-number">02</div>
+                    <h2>Sites<br>desenvolvidos</h2>
+                    <p>Sites, landing pages e páginas comerciais criadas para posicionamento, vendas e presença digital.
+                    </p>
+                </div>
+                <span class="btn">Ver sites</span>
+            </a>
+        </section>
+
+        <section class="section" id="apresentacoes">
+            <div class="section-title">Apresentações criadas</div>
+            <div class="grid">
+                <a class="card" href="/portfolio/apresentacoes/amandapereira/">
+                    <div>
+                        <div class="tag">Workshop</div>
+                        <h3>Amanda Pereira</h3>
+                        <p>Estrutura de autoridade, posicionamento profissional e jornada de workshop.</p>
+                    </div>
+                    <span>Ver projeto →</span>
+                </a>
+
+                <a class="card" href="/portfolio/apresentacoes/joaquimfagundes/">
+                    <div>
+                        <div class="tag">Palestra</div>
+                        <h3>Joaquim Fagundes</h3>
+                        <p>Apresentação estratégica com narrativa profissional e direção visual.</p>
+                    </div>
+                    <span>Ver projeto →</span>
+                </a>
+
+                <a class="card" href="/portfolio/apresentacoes/joeljota/">
+                    <div>
+                        <div class="tag">Deck premium</div>
+                        <h3>Joel Jota</h3>
+                        <p>Conceito visual forte, linguagem direta e estrutura de impacto para palco.</p>
+                    </div>
+                    <span>Ver projeto →</span>
+                </a>
+
+                <a class="card" href="/portfolio/apresentacoes/orlandocarvalho/">
+                    <div>
+                        <div class="tag">Institucional</div>
+                        <h3>Orlando Carvalho</h3>
+                        <p>Posicionamento de ecossistema, marca pessoal e autoridade estratégica.</p>
+                    </div>
+                    <span>Ver projeto →</span>
+                </a>
+
+                <a class="card" href="/portfolio/apresentacoes/veredo/">
+                    <div>
+                        <div class="tag">Comercial</div>
+                        <h3>Veredo</h3>
+                        <p>Apresentação comercial com foco em percepção de valor e clareza de oferta.</p>
+                    </div>
+                    <span>Ver projeto →</span>
+                </a>
+            </div>
+        </section>
+
+        <section class="section" id="sites">
+            <div class="section-title">Sites desenvolvidos</div>
+            <div class="grid">
+                <a class="card" href="/portfolio/sites/encantodemorena/">
+                    <div>
+                        <div class="tag">Loja virtual</div>
+                        <h3>Encanto de Morena</h3>
+                        <p>Projeto de e-commerce para posicionamento, vitrine de produtos e conversão.</p>
+                    </div>
+                    <span>Ver site →</span>
+                </a>
+
+                <a class="card" href="https://braryeditora.com.br/" target="_blank">
+                    <div>
+                        <div class="tag">Editora</div>
+                        <h3>Brary Editora</h3>
+                        <p>Presença institucional para autores, livros, autoridade editorial e negócios.</p>
+                    </div>
+                    <span>Abrir site →</span>
+                </a>
+
+                <a class="card" href="https://brary-institute-site.vercel.app/" target="_blank">
+                    <div>
+                        <div class="tag">Instituto</div>
+                        <h3>Brary Institute</h3>
+                        <p>Estrutura de autoridade educacional, formação e posicionamento de marca.</p>
+                    </div>
+                    <span>Abrir site →</span>
+                </a>
+
+                <a class="card" href="https://plataforma-gm-os.vercel.app/" target="_blank">
+                    <div>
+                        <div class="tag">Plataforma</div>
+                        <h3>GM OS</h3>
+                        <p>Sistema operacional estratégico para ecossistema, gestão e crescimento.</p>
+                    </div>
+                    <span>Abrir site →</span>
+                </a>
+
+                <a class="card" href="https://ghostwriting-six.vercel.app/" target="_blank">
+                    <div>
+                        <div class="tag">Landing page</div>
+                        <h3>Ghostwriting</h3>
+                        <p>Página de conversão para autores, especialistas e líderes com livro em potencial.</p>
+                    </div>
+                    <span>Abrir site →</span>
+                </a>
+            </div>
+        </section>
+
+        <section class="cta">
+            <div>
+                <h2>SUA IDEIA<br>PODE VIRAR ATIVO.</h2>
+                <p>
+                    Apresentações, sites e narrativas digitais criadas para posicionar sua autoridade com clareza,
+                    estética e intenção comercial.
+                </p>
+            </div>
+            <a
+                href="https://wa.me/5521983461734?text=Ol%C3%A1%2C%20Orlando.%20Quero%20criar%20um%20projeto%20estrat%C3%A9gico.">
+                Solicitar projeto
+            </a>
+        </section>
+
+        <footer>
+            Orlando Carvalho · Brary Editora · GM OS · Portfólio Estratégico
+        </footer>
+    </main>
+</body>
+
+</html>
