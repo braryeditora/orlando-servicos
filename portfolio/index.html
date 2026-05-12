@@ -1,498 +1,927 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Portfólio | Orlando Serviços</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap"
-        rel="stylesheet" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfólio | Orlando Serviços</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black:    #060504;
+      --deep:     #0B0906;
+      --surface:  #111009;
+      --surface2: #181610;
+      --border:   #222018;
+      --border2:  #2A2720;
+      --amber:    #C8922A;
+      --amber2:   #E0A830;
+      --amber-lt: #F0BE50;
+      --amber-dim:#2A1E08;
+      --white:    #F5F0E8;
+      --cream:    #EDE5D5;
+      --muted:    #5A5448;
+      --muted2:   #7A7268;
+    }
 
-    <style>
-        :root {
-            --black: #070707;
-            --red: #E8321A;
-            --red2: #FF4528;
-            --white: #F7F4F0;
-            --grey: #141414;
-            --grey2: #1E1E1E;
-            --muted: #8a8a8a;
-        }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0
-        }
+    html { scroll-behavior: smooth; }
 
-        body {
-            background: var(--black);
-            color: var(--white);
-            font-family: 'DM Sans', sans-serif;
-        }
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
 
-        a {
-            color: inherit;
-            text-decoration: none
-        }
+    a { color: inherit; text-decoration: none; }
 
-        .grain {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            opacity: .045;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-            z-index: 0;
-        }
+    /* ── CURSOR ── */
+    * { cursor: none; }
+    .cur {
+      position: fixed; width: 8px; height: 8px;
+      background: var(--amber); border-radius: 50%;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: width .2s, height .2s, background .2s;
+      mix-blend-mode: exclusion;
+    }
+    .cur.hover { width: 32px; height: 32px; background: var(--amber-lt); }
 
-        .wrap {
-            position: relative;
-            z-index: 1;
-            width: min(1180px, 90%);
-            margin: 0 auto;
-        }
+    /* ── GRAIN ── */
+    .grain {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: .055;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 180px;
+    }
 
-        header {
-            padding: 34px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #1d1d1d;
-        }
+    /* ── VIGNETTE ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background: radial-gradient(ellipse at center, transparent 40%, rgba(6,5,4,.7) 100%);
+    }
 
-        .brand {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 28px;
-            letter-spacing: .08em;
-        }
+    /* ── WRAP ── */
+    .wrap {
+      position: relative; z-index: 1;
+      width: min(1160px, 92%);
+      margin: 0 auto;
+    }
 
-        nav {
-            display: flex;
-            gap: 24px;
-            font-size: 13px;
-            color: var(--muted);
-        }
+    /* ── HEADER ── */
+    header {
+      padding: 28px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0;
+      background: rgba(6,5,4,.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 100;
+    }
 
-        nav a:hover {
-            color: var(--red)
-        }
+    .brand {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: .14em;
+      color: var(--white);
+    }
+    .brand em {
+      font-style: normal;
+      color: var(--amber);
+    }
 
-        .hero {
-            padding: 90px 0 70px;
-        }
+    nav {
+      display: flex;
+      gap: 28px;
+      font-size: 12px;
+      letter-spacing: .08em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    nav a { transition: color .2s; }
+    nav a:hover { color: var(--amber-lt); }
 
-        .kicker {
-            color: var(--red);
-            font-size: 12px;
-            letter-spacing: .22em;
-            text-transform: uppercase;
-            margin-bottom: 18px;
-        }
+    /* ── HERO ── */
+    .hero {
+      padding: 100px 0 80px;
+      position: relative;
+    }
 
-        h1 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: clamp(72px, 12vw, 150px);
-            line-height: .86;
-            letter-spacing: .01em;
-            max-width: 900px;
-        }
+    /* ambient glow */
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 600px; height: 400px;
+      top: 0; left: -100px;
+      background: radial-gradient(ellipse, rgba(200,146,42,.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
 
-        h1 em {
-            color: var(--red);
-            font-style: normal;
-            display: block;
-        }
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--amber);
+      font-size: 10px;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    .kicker::before {
+      content: '';
+      width: 24px; height: 1px;
+      background: var(--amber);
+    }
 
-        .hero p {
-            max-width: 620px;
-            margin-top: 26px;
-            color: var(--muted);
-            font-size: 16px;
-            line-height: 1.7;
-            font-weight: 300;
-        }
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(68px, 11vw, 140px);
+      line-height: .86;
+      letter-spacing: .01em;
+      max-width: 880px;
+      color: var(--white);
+    }
+    h1 em {
+      font-style: normal;
+      display: block;
+      /* elegant gradient text */
+      background: linear-gradient(135deg, var(--amber-lt) 0%, var(--amber) 50%, var(--amber2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
 
-        .paths {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 2px;
-            margin: 30px 0 90px;
-        }
+    .hero-sub {
+      max-width: 560px;
+      margin-top: 28px;
+      color: var(--muted2);
+      font-size: 16px;
+      line-height: 1.75;
+      font-weight: 300;
+      border-left: 1px solid var(--border2);
+      padding-left: 20px;
+    }
 
-        .path {
-            background: var(--grey);
-            padding: 42px;
-            min-height: 280px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid #202020;
-            transition: .25s;
-        }
+    /* ── PATHS ── */
+    .paths {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2px;
+      margin: 40px 0 80px;
+    }
 
-        .path:hover {
-            background: #180800;
-            border-color: var(--red);
-            transform: translateY(-4px);
-        }
+    .path {
+      background: var(--surface);
+      padding: 48px 44px;
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      transition: border-color .3s, background .3s, transform .3s;
+    }
+    .path::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(200,146,42,.04) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity .3s;
+    }
+    .path:hover { border-color: var(--amber-dim); background: var(--surface2); transform: translateY(-3px); }
+    .path:hover::before { opacity: 1; }
 
-        .path::after {
-            content: attr(data-label);
-            position: absolute;
-            right: -8px;
-            bottom: -34px;
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 150px;
-            color: rgba(232, 50, 26, .08);
-            line-height: 1;
-        }
+    /* large watermark number */
+    .path::after {
+      content: attr(data-label);
+      position: absolute;
+      right: -10px; bottom: -40px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 160px;
+      color: rgba(200,146,42,.05);
+      line-height: 1;
+      pointer-events: none;
+    }
 
-        .path-number {
-            color: var(--red);
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 34px;
-            margin-bottom: 22px;
-        }
+    .path-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 13px;
+      letter-spacing: .2em;
+      color: var(--amber);
+      margin-bottom: 28px;
+    }
 
-        .path h2 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 54px;
-            line-height: .9;
-            margin-bottom: 20px;
-        }
+    .path h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 52px;
+      line-height: .92;
+      margin-bottom: 18px;
+      color: var(--white);
+    }
 
-        .path p {
-            color: var(--muted);
-            line-height: 1.65;
-            max-width: 430px;
-            font-weight: 300;
-        }
+    .path p {
+      color: var(--muted2);
+      line-height: 1.7;
+      max-width: 400px;
+      font-weight: 300;
+      font-size: 14px;
+    }
 
-        .btn {
-            margin-top: 28px;
-            display: inline-flex;
-            width: max-content;
-            background: var(--red);
-            color: var(--black);
-            font-weight: 700;
-            padding: 13px 20px;
-            border-radius: 999px;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-        }
+    .btn {
+      margin-top: 32px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: max-content;
+      background: transparent;
+      border: 1px solid var(--amber-dim);
+      color: var(--amber);
+      padding: 11px 20px;
+      border-radius: 2px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-weight: 500;
+      transition: background .2s, border-color .2s, color .2s;
+    }
+    .btn::after { content: '→'; }
+    .path:hover .btn {
+      background: var(--amber);
+      border-color: var(--amber);
+      color: var(--black);
+    }
 
-        .section {
-            margin-bottom: 90px;
-        }
+    /* ── SECTION ── */
+    .section {
+      margin-bottom: 80px;
+    }
 
-        .section-title {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-            margin-bottom: 28px;
-            color: var(--red);
-            font-size: 12px;
-            letter-spacing: .22em;
-            text-transform: uppercase;
-        }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+    .section-tag {
+      font-size: 10px;
+      letter-spacing: .24em;
+      text-transform: uppercase;
+      color: var(--amber);
+      flex-shrink: 0;
+    }
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .section-count {
+      font-size: 10px;
+      letter-spacing: .1em;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
 
-        .section-title::after {
-            content: "";
-            height: 1px;
-            background: #242424;
-            flex: 1;
-        }
+    /* ── GRID ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2px;
+    }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 14px;
-        }
+    /* ── CARD ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 32px 28px;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .25s, background .25s, transform .25s;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--amber), transparent);
+      transform: scaleX(0);
+      transition: transform .35s ease;
+    }
+    .card:hover { border-color: var(--border2); background: var(--surface2); transform: translateY(-2px); }
+    .card:hover::before { transform: scaleX(1); }
 
-        .card {
-            background: var(--grey);
-            border: 1px solid #202020;
-            padding: 28px;
-            min-height: 210px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: .25s;
-        }
+    /* subtle inner glow on hover */
+    .card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(ellipse at top left, rgba(200,146,42,.06) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity .3s;
+      pointer-events: none;
+    }
+    .card:hover::after { opacity: 1; }
 
-        .card:hover {
-            border-color: var(--red);
-            transform: translateY(-3px);
-            background: var(--grey2);
-        }
+    .tag {
+      font-size: 9px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 14px;
+      opacity: .75;
+    }
 
-        .tag {
-            color: var(--red);
-            font-size: 11px;
-            letter-spacing: .16em;
-            text-transform: uppercase;
-            margin-bottom: 16px;
-        }
+    .card h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 30px;
+      line-height: 1;
+      letter-spacing: .02em;
+      margin-bottom: 10px;
+      color: var(--white);
+    }
 
-        .card h3 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 34px;
-            line-height: 1;
-            margin-bottom: 12px;
-        }
+    .card p {
+      color: var(--muted2);
+      font-size: 13px;
+      line-height: 1.6;
+      font-weight: 300;
+    }
 
-        .card p {
-            color: var(--muted);
-            font-size: 14px;
-            line-height: 1.55;
-            font-weight: 300;
-        }
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
 
-        .card span {
-            margin-top: 20px;
-            color: var(--red);
-            font-size: 13px;
-            font-weight: 700;
-        }
+    .card-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px;
+      letter-spacing: .04em;
+      color: var(--amber);
+      opacity: .7;
+      transition: opacity .2s;
+    }
+    .card:hover .card-price { opacity: 1; }
 
-        .cta {
-            margin: 110px 0 70px;
-            background: var(--red);
-            color: var(--black);
-            padding: 54px;
-            display: flex;
-            justify-content: space-between;
-            gap: 30px;
-            align-items: flex-end;
-        }
+    .card-link {
+      font-size: 11px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color .2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-link::after { content: '→'; transition: transform .2s; }
+    .card:hover .card-link { color: var(--amber-lt); }
+    .card:hover .card-link::after { transform: translateX(4px); }
 
-        .cta h2 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 70px;
-            line-height: .9;
-        }
+    /* ── PRICING BAND ── */
+    .pricing-band {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      margin: 0 0 80px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
 
-        .cta p {
-            max-width: 480px;
-            color: rgba(7, 7, 7, .65);
-            line-height: 1.6;
-            margin-top: 16px;
-        }
+    .pricing-col {
+      background: var(--surface);
+      padding: 40px 36px;
+    }
 
-        .cta a {
-            background: var(--black);
-            color: var(--white);
-            padding: 15px 24px;
-            border-radius: 999px;
-            font-weight: 700;
-            font-size: 13px;
-            text-transform: uppercase;
-            white-space: nowrap;
-        }
+    .pricing-col-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 13px;
+      letter-spacing: .2em;
+      color: var(--amber);
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .pricing-col-title::after {
+      content: ''; flex: 1; height: 1px; background: var(--border2);
+    }
 
-        footer {
-            padding: 30px 0 50px;
-            color: #555;
-            font-size: 12px;
-            border-top: 1px solid #1d1d1d;
-        }
+    .pricing-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      gap: 16px;
+    }
+    .pricing-item:last-child { border-bottom: none; }
 
-        @media(max-width:780px) {
-            header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 18px
-            }
+    .pricing-label {
+      font-size: 13px;
+      color: var(--muted2);
+      font-weight: 300;
+    }
 
-            nav {
-                flex-wrap: wrap
-            }
+    .pricing-value {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
+      letter-spacing: .04em;
+      color: var(--white);
+      flex-shrink: 0;
+    }
 
-            .paths {
-                grid-template-columns: 1fr
-            }
+    .pricing-value small {
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: .06em;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+    }
 
-            .cta {
-                flex-direction: column;
-                align-items: flex-start
-            }
+    /* ── CTA ── */
+    .cta-block {
+      margin: 80px 0 70px;
+      position: relative;
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      padding: 56px 52px;
+      display: flex;
+      justify-content: space-between;
+      gap: 40px;
+      align-items: flex-end;
+    }
 
-            .cta h2 {
-                font-size: 52px
-            }
-        }
-    </style>
+    /* ambient glow in CTA */
+    .cta-block::before {
+      content: '';
+      position: absolute;
+      width: 400px; height: 300px;
+      top: -100px; left: -80px;
+      background: radial-gradient(ellipse, rgba(200,146,42,.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-block::after {
+      content: 'BRARY';
+      position: absolute;
+      right: -20px; bottom: -40px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 180px;
+      color: rgba(200,146,42,.04);
+      line-height: 1;
+      pointer-events: none;
+      letter-spacing: .06em;
+    }
+
+    .cta-left { position: relative; z-index: 1; }
+
+    .cta-block h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(44px, 6vw, 72px);
+      line-height: .9;
+      color: var(--white);
+    }
+    .cta-block h2 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--amber-lt), var(--amber));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .cta-block p {
+      max-width: 440px;
+      color: var(--muted2);
+      line-height: 1.7;
+      margin-top: 16px;
+      font-size: 14px;
+      font-weight: 300;
+    }
+
+    .cta-action { position: relative; z-index: 1; flex-shrink: 0; }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--amber);
+      color: var(--black);
+      padding: 16px 28px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-weight: 700;
+      border: none;
+      transition: background .2s, transform .2s;
+      white-space: nowrap;
+    }
+    .cta-btn:hover { background: var(--amber-lt); transform: translateY(-2px); }
+    .cta-btn::after { content: '→'; font-size: 14px; }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 28px 0 50px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: .06em;
+    }
+    footer a { color: var(--amber); opacity: .6; transition: opacity .2s; }
+    footer a:hover { opacity: 1; }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* stagger children */
+    .reveal-children > * {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .5s ease, transform .5s ease;
+    }
+    .reveal-children.visible > *:nth-child(1) { opacity:1; transform:none; transition-delay:.05s; }
+    .reveal-children.visible > *:nth-child(2) { opacity:1; transform:none; transition-delay:.12s; }
+    .reveal-children.visible > *:nth-child(3) { opacity:1; transform:none; transition-delay:.19s; }
+    .reveal-children.visible > *:nth-child(4) { opacity:1; transform:none; transition-delay:.26s; }
+    .reveal-children.visible > *:nth-child(5) { opacity:1; transform:none; transition-delay:.33s; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 780px) {
+      header { flex-direction: column; align-items: flex-start; gap: 16px; padding: 20px 0; }
+      nav { flex-wrap: wrap; gap: 16px; }
+      .hero { padding: 60px 0 50px; }
+      .paths { grid-template-columns: 1fr; }
+      .pricing-band { grid-template-columns: 1fr; }
+      .cta-block { flex-direction: column; align-items: flex-start; padding: 36px 28px; }
+      footer { flex-direction: column; gap: 8px; }
+      .cur { display: none; }
+    }
+  </style>
 </head>
-
 <body>
-    <div class="grain"></div>
 
-    <main class="wrap">
-        <header>
-            <a class="brand" href="/">ORLANDO SERVIÇOS</a>
-            <nav>
-                <a href="/">Início</a>
-                <a href="/#solucoes">Soluções</a>
-                <a href="/portfolio/">Portfólio</a>
-                <a href="https://ghostwriting-six.vercel.app/">Ghostwriting</a>
-                <a href="/#contato">Contato</a>
-            </nav>
-        </header>
+<div class="cur" id="cur"></div>
+<div class="grain"></div>
 
-        <section class="hero">
-            <div class="kicker">Portfólio · Estratégia · Autoridade</div>
-            <h1>PROJETOS COM<br><em>FORMA E PRESENÇA.</em></h1>
-            <p>
-                Uma seleção de apresentações, páginas e experiências digitais criadas para transformar conhecimento,
-                autoridade e posicionamento em ativos comerciais visíveis.
-            </p>
-        </section>
+<main class="wrap">
 
-        <section class="paths">
-            <a class="path" href="#apresentacoes" data-label="01">
-                <div>
-                    <div class="path-number">01</div>
-                    <h2>Apresentações<br>criadas</h2>
-                    <p>Decks, palestras, workshops e propostas estruturadas com narrativa, clareza visual e intenção
-                        comercial.</p>
-                </div>
-                <span class="btn">Ver apresentações</span>
-            </a>
+  <!-- HEADER -->
+  <header>
+    <a class="brand" href="/">ORLANDO <em>SERVIÇOS</em></a>
+    <nav>
+      <a href="/">Início</a>
+      <a href="#solucoes">Soluções</a>
+      <a href="#apresentacoes">Apresentações</a>
+      <a href="#sites">Sites</a>
+      <a href="https://ghostwriting-six.vercel.app/" target="_blank">Ghostwriting</a>
+      <a href="#contato">Contato</a>
+    </nav>
+  </header>
 
-            <a class="path" href="#sites" data-label="02">
-                <div>
-                    <div class="path-number">02</div>
-                    <h2>Sites<br>desenvolvidos</h2>
-                    <p>Sites, landing pages e páginas comerciais criadas para posicionamento, vendas e presença digital.
-                    </p>
-                </div>
-                <span class="btn">Ver sites</span>
-            </a>
-        </section>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="kicker">Portfólio · Estratégia · Autoridade</div>
+    <h1>PROJETOS COM<br><em>FORMA E PRESENÇA.</em></h1>
+    <p class="hero-sub">
+      Uma seleção de apresentações, páginas e experiências digitais criadas para transformar conhecimento, autoridade e posicionamento em ativos comerciais visíveis.
+    </p>
+  </section>
 
-        <section class="section" id="apresentacoes">
-            <div class="section-title">Apresentações criadas</div>
-            <div class="grid">
-                <a class="card" href="/portfolio/apresentacoes/amandapereira/">
-                    <div>
-                        <div class="tag">Workshop</div>
-                        <h3>Amanda Pereira</h3>
-                        <p>Estrutura de autoridade, posicionamento profissional e jornada de workshop.</p>
-                    </div>
-                    <span>Ver projeto →</span>
-                </a>
+  <!-- PATHS -->
+  <section class="paths reveal-children" id="solucoes">
+    <a class="path" href="#apresentacoes" data-label="01">
+      <div>
+        <div class="path-number">01 · APRESENTAÇÕES</div>
+        <h2>Palestras &amp;<br>Workshops</h2>
+        <p>Decks, palestras, workshops e propostas estruturadas com narrativa, clareza visual e intenção comercial. Entregues como aplicação web — link publicado, timer ao vivo, identidade própria.</p>
+      </div>
+      <span class="btn">Ver apresentações</span>
+    </a>
+    <a class="path" href="#sites" data-label="02">
+      <div>
+        <div class="path-number">02 · SITES</div>
+        <h2>Sites &amp;<br>Landing Pages</h2>
+        <p>Sites, landing pages e páginas comerciais criadas para posicionamento, vendas e presença digital. Design editorial, performance real, identidade autoral.</p>
+      </div>
+      <span class="btn">Ver sites</span>
+    </a>
+  </section>
 
-                <a class="card" href="/portfolio/apresentacoes/joaquimfagundes/">
-                    <div>
-                        <div class="tag">Palestra</div>
-                        <h3>Joaquim Fagundes</h3>
-                        <p>Apresentação estratégica com narrativa profissional e direção visual.</p>
-                    </div>
-                    <span>Ver projeto →</span>
-                </a>
+  <!-- APRESENTAÇÕES -->
+  <section class="section reveal" id="apresentacoes">
+    <div class="section-header">
+      <span class="section-tag">Apresentações criadas</span>
+      <div class="section-line"></div>
+      <span class="section-count">05 projetos</span>
+    </div>
+    <div class="grid reveal-children">
 
-                <a class="card" href="/portfolio/apresentacoes/joeljota/">
-                    <div>
-                        <div class="tag">Deck premium</div>
-                        <h3>Joel Jota</h3>
-                        <p>Conceito visual forte, linguagem direta e estrutura de impacto para palco.</p>
-                    </div>
-                    <span>Ver projeto →</span>
-                </a>
+      <a class="card" href="/portfolio/apresentacoes/amandapereira/">
+        <div>
+          <div class="tag">Workshop · Saúde</div>
+          <h3>Amanda Pereira</h3>
+          <p>Workshop de palestra gratuita com pitch integrado. Protocolo de escoliose, autoridade clínica e programa de formação para fisioterapeutas.</p>
+        </div>
+        <div class="card-footer">
+          <span class="card-price">R$ 2.800</span>
+          <span class="card-link">Ver projeto</span>
+        </div>
+      </a>
 
-                <a class="card" href="/portfolio/apresentacoes/orlandocarvalho/">
-                    <div>
-                        <div class="tag">Institucional</div>
-                        <h3>Orlando Carvalho</h3>
-                        <p>Posicionamento de ecossistema, marca pessoal e autoridade estratégica.</p>
-                    </div>
-                    <span>Ver projeto →</span>
-                </a>
+      <a class="card" href="/portfolio/apresentacoes/joaquimfagundes/">
+        <div>
+          <div class="tag">Palestra · Gestão</div>
+          <h3>Joaquim Fagundes</h3>
+          <p>Apresentação estratégica para palestrante com +110 mil empresários formados. Narrativa de autoridade, identidade do livro e pitch embutido.</p>
+        </div>
+        <div class="card-footer">
+          <span class="card-price">R$ 3.500</span>
+          <span class="card-link">Ver projeto</span>
+        </div>
+      </a>
 
-                <a class="card" href="/portfolio/apresentacoes/veredo/">
-                    <div>
-                        <div class="tag">Comercial</div>
-                        <h3>Veredo</h3>
-                        <p>Apresentação comercial com foco em percepção de valor e clareza de oferta.</p>
-                    </div>
-                    <span>Ver projeto →</span>
-                </a>
-            </div>
-        </section>
+      <a class="card" href="/portfolio/apresentacoes/joeljota/">
+        <div>
+          <div class="tag">Deck premium · Vendas</div>
+          <h3>Joel Jota</h3>
+          <p>Conceito visual forte, linguagem direta e estrutura de impacto para palco. Método GROW com contador animado e identidade vermelho premium.</p>
+        </div>
+        <div class="card-footer">
+          <span class="card-price">R$ 4.500</span>
+          <span class="card-link">Ver projeto</span>
+        </div>
+      </a>
 
-        <section class="section" id="sites">
-            <div class="section-title">Sites desenvolvidos</div>
-            <div class="grid">
-                <a class="card" href="/portfolio/sites/encantodemorena/">
-                    <div>
-                        <div class="tag">Loja virtual</div>
-                        <h3>Encanto de Morena</h3>
-                        <p>Projeto de e-commerce para posicionamento, vitrine de produtos e conversão.</p>
-                    </div>
-                    <span>Ver site →</span>
-                </a>
+      <a class="card" href="/portfolio/apresentacoes/orlandocarvalho/">
+        <div>
+          <div class="tag">Institucional · Livro</div>
+          <h3>Orlando Carvalho</h3>
+          <p>Palestra baseada no livro Networker. Identidade visual do livro transposta para slides — formas pill, amarelo vibrante, narrativa de conexão.</p>
+        </div>
+        <div class="card-footer">
+          <span class="card-price">R$ 3.500</span>
+          <span class="card-link">Ver projeto</span>
+        </div>
+      </a>
 
-                <a class="card" href="https://braryeditora.com.br/" target="_blank">
-                    <div>
-                        <div class="tag">Editora</div>
-                        <h3>Brary Editora</h3>
-                        <p>Presença institucional para autores, livros, autoridade editorial e negócios.</p>
-                    </div>
-                    <span>Abrir site →</span>
-                </a>
+      <a class="card" href="/portfolio/apresentacoes/veredo/">
+        <div>
+          <div class="tag">Comercial · Proposta</div>
+          <h3>Veredo</h3>
+          <p>Apresentação comercial com foco em percepção de valor e clareza de oferta. Design sob medida para o posicionamento da marca.</p>
+        </div>
+        <div class="card-footer">
+          <span class="card-price">Sob consulta</span>
+          <span class="card-link">Ver projeto</span>
+        </div>
+      </a>
 
-                <a class="card" href="https://brary-institute-site.vercel.app/" target="_blank">
-                    <div>
-                        <div class="tag">Instituto</div>
-                        <h3>Brary Institute</h3>
-                        <p>Estrutura de autoridade educacional, formação e posicionamento de marca.</p>
-                    </div>
-                    <span>Abrir site →</span>
-                </a>
+    </div>
+  </section>
 
-                <a class="card" href="https://plataforma-gm-os.vercel.app/" target="_blank">
-                    <div>
-                        <div class="tag">Plataforma</div>
-                        <h3>GM OS</h3>
-                        <p>Sistema operacional estratégico para ecossistema, gestão e crescimento.</p>
-                    </div>
-                    <span>Abrir site →</span>
-                </a>
+  <!-- TABELA DE PREÇOS — APRESENTAÇÕES -->
+  <section class="section reveal">
+    <div class="section-header">
+      <span class="section-tag">Investimento · Apresentações</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="pricing-band">
+      <div class="pricing-col">
+        <div class="pricing-col-title">Escopo</div>
+        <div class="pricing-item">
+          <span class="pricing-label">Só roteiro estruturado</span>
+          <span class="pricing-value">R$ 1.200 <small>– 1.800</small></span>
+        </div>
+        <div class="pricing-item">
+          <span class="pricing-label">Roteiro + estrutura de slides</span>
+          <span class="pricing-value">R$ 2.200 <small>– 3.500</small></span>
+        </div>
+        <div class="pricing-item">
+          <span class="pricing-label">Pacote completo · link publicado</span>
+          <span class="pricing-value">R$ 3.500 <small>– 5.500</small></span>
+        </div>
+        <div class="pricing-item">
+          <span class="pricing-label">Corporativo · pesquisa + suporte</span>
+          <span class="pricing-value">R$ 8.000 <small>– 15.000</small></span>
+        </div>
+      </div>
+      <div class="pricing-col">
+        <div class="pricing-col-title">O que está incluso no pacote</div>
+        <div class="pricing-item">
+          <span class="pricing-label">Roteiro com narrativa e flow emocional</span>
+          <span class="pricing-value" style="color:var(--amber);font-size:16px;">✦</span>
+        </div>
+        <div class="pricing-item">
+          <span class="pricing-label">6 slides profissionais diagramados</span>
+          <span class="pricing-value" style="color:var(--amber);font-size:16px;">✦</span>
+        </div>
+        <div class="pricing-item">
+          <span class="pricing-label">Design com identidade do palestrante</span>
+          <span class="pricing-value" style="color:var(--amber);font-size:16px;">✦</span>
+        </div>
+        <div class="pricing-item">
+          <span class="pricing-label">Link publicado · 2 rodadas de ajuste</span>
+          <span class="pricing-value" style="color:var(--amber);font-size:16px;">✦</span>
+        </div>
+      </div>
+    </div>
+  </section>
 
-                <a class="card" href="https://ghostwriting-six.vercel.app/" target="_blank">
-                    <div>
-                        <div class="tag">Landing page</div>
-                        <h3>Ghostwriting</h3>
-                        <p>Página de conversão para autores, especialistas e líderes com livro em potencial.</p>
-                    </div>
-                    <span>Abrir site →</span>
-                </a>
-            </div>
-        </section>
+  <!-- SITES -->
+  <section class="section reveal" id="sites">
+    <div class="section-header">
+      <span class="section-tag">Sites desenvolvidos</span>
+      <div class="section-line"></div>
+      <span class="section-count">05 projetos</span>
+    </div>
+    <div class="grid reveal-children">
 
-        <section class="cta">
-            <div>
-                <h2>SUA IDEIA<br>PODE VIRAR ATIVO.</h2>
-                <p>
-                    Apresentações, sites e narrativas digitais criadas para posicionar sua autoridade com clareza,
-                    estética e intenção comercial.
-                </p>
-            </div>
-            <a
-                href="https://wa.me/5521983461734?text=Ol%C3%A1%2C%20Orlando.%20Quero%20criar%20um%20projeto%20estrat%C3%A9gico.">
-                Solicitar projeto
-            </a>
-        </section>
+      <a class="card" href="/portfolio/sites/encantodemorena/">
+        <div>
+          <div class="tag">Loja virtual · E-commerce</div>
+          <h3>Encanto de Morena</h3>
+          <p>Projeto de e-commerce para posicionamento, vitrine de produtos e conversão. Design com identidade da marca.</p>
+        </div>
+        <div class="card-footer">
+          <span class="card-price">R$ 4.500</span>
+          <span class="card-link">Ver site</span>
+        </div>
+      </a>
 
-        <footer>
-            Orlando Carvalho · Brary Editora · GM OS · Portfólio Estratégico
-        </footer>
-    </main>
+      <a class="card" href="https://braryeditora.com.br/" target="_blank">
+        <div>
+          <div class="tag">Institucional · Editora</div>
+          <h3>Brary Editora</h3>
+          <p>Presença institucional para autores, livros, autoridade editorial e negócios. Identidade premium da editora.</p>
+        </div>
+        <div class="card-footer">
+          <span class="card-price">Sob consulta</span>
+          <span class="card-link">Abrir site</span>
+        </div>
+      </a>
+
+      <a class="card" href="https://brary-institute-site.vercel.app/" target="_blank">
+        <div>
+          <div class="tag">Educacional · Instituto</div>
+          <h3>Brary Institute</h3>
+          <p>Estrutura de autoridade educacional, formação e posicionamento de marca. Design editorial consistente.</p>
+        </div>
+        <div class="card-footer">
+          <span class="card-price">Sob consulta</span>
+          <span class="card-link">Abrir site</span>
+        </div>
+      </a>
+
+      <a class="card" href="https://plataforma-gm-os.vercel.app/" target="_blank">
+        <div>
+          <div class="tag">Plataforma · Sistema</div>
+          <h3>GM OS</h3>
+          <p>Sistema operacional estratégico para ecossistema, gestão e crescimento de negócios digitais.</p>
+        </div>
+        <div class="card-footer">
+          <span class="card-price">Sob consulta</span>
+          <span class="card-link">Abrir site</span>
+        </div>
+      </a>
+
+      <a class="card" href="https://ghostwriting-six.vercel.app/" target="_blank">
+        <div>
+          <div class="tag">Landing page · Conversão</div>
+          <h3>Ghostwriting</h3>
+          <p>Página de conversão para autores, especialistas e líderes com livro em potencial. Copy e design integrados.</p>
+        </div>
+        <div class="card-footer">
+          <span class="card-price">R$ 2.500 <small style="font-size:11px;color:var(--muted)">– 5.000</small></span>
+          <span class="card-link">Abrir site</span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- TABELA DE PREÇOS — SITES -->
+  <section class="section reveal">
+    <div class="section-header">
+      <span class="section-tag">Investimento · Sites e páginas</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="pricing-band">
+      <div class="pricing-col">
+        <div class="pricing-col-title">Tipo de entrega</div>
+        <div class="pricing-item">
+          <span class="pricing-label">Landing page de conversão</span>
+          <span class="pricing-value">R$ 2.500 <small>– 4.500</small></span>
+        </div>
+        <div class="pricing-item">
+          <span class="pricing-label">Site institucional</span>
+          <span class="pricing-value">R$ 4.500 <small>– 8.000</small></span>
+        </div>
+        <div class="pricing-item">
+          <span class="pricing-label">Loja virtual</span>
+          <span class="pricing-value">R$ 4.500 <small>– 9.000</small></span>
+        </div>
+        <div class="pricing-item">
+          <span class="pricing-label">Plataforma / sistema web</span>
+          <span class="pricing-value">Sob consulta</span>
+        </div>
+      </div>
+      <div class="pricing-col">
+        <div class="pricing-col-title">Incluso em todos os projetos</div>
+        <div class="pricing-item">
+          <span class="pricing-label">Design com identidade autoral</span>
+          <span class="pricing-value" style="color:var(--amber);font-size:16px;">✦</span>
+        </div>
+        <div class="pricing-item">
+          <span class="pricing-label">Responsivo mobile-first</span>
+          <span class="pricing-value" style="color:var(--amber);font-size:16px;">✦</span>
+        </div>
+        <div class="pricing-item">
+          <span class="pricing-label">Publicação e configuração</span>
+          <span class="pricing-value" style="color:var(--amber);font-size:16px;">✦</span>
+        </div>
+        <div class="pricing-item">
+          <span class="pricing-label">2 rodadas de revisão</span>
+          <span class="pricing-value" style="color:var(--amber);font-size:16px;">✦</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-block reveal" id="contato">
+    <div class="cta-left">
+      <h2>SUA IDEIA<br>PODE VIRAR <em>ATIVO.</em></h2>
+      <p>Apresentações, sites e narrativas digitais criadas para posicionar sua autoridade com clareza, estética e intenção comercial. Cada projeto é único — nunca template.</p>
+    </div>
+    <div class="cta-action">
+      <a class="cta-btn" href="https://wa.me/5521983461734?text=Ol%C3%A1%2C%20Orlando.%20Quero%20criar%20um%20projeto%20estrat%C3%A9gico." target="_blank">
+        Solicitar projeto
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>Orlando Carvalho · Brary Editora · GM OS</span>
+    <span>
+      <a href="https://ghostwriting-six.vercel.app/" target="_blank">Ghostwriting</a>
+      &nbsp;·&nbsp;
+      <a href="https://braryeditora.com.br/" target="_blank">Brary Editora</a>
+    </span>
+  </footer>
+
+</main>
+
+<script>
+  // cursor
+  const cur = document.getElementById('cur');
+  document.addEventListener('mousemove', e => {
+    cur.style.left = e.clientX + 'px';
+    cur.style.top  = e.clientY + 'px';
+  });
+  document.querySelectorAll('a, .btn, .cta-btn').forEach(el => {
+    el.addEventListener('mouseenter', () => cur.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cur.classList.remove('hover'));
+  });
+
+  // scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: .08 });
+
+  document.querySelectorAll('.reveal, .reveal-children').forEach(el => observer.observe(el));
+</script>
 </body>
-
 </html>
