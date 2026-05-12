@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apresentações que Vendem — Joel Jota</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black:  #070707;
+      --red:    #E8321A;
+      --red2:   #FF4528;
+      --white:  #F7F4F0;
+      --grey:   #141414;
+      --grey2:  #1E1E1E;
+      --muted:  #4A4A4A;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: var(--black); font-family: 'DM Sans', sans-serif; -webkit-font-smoothing: antialiased; cursor: none; }
+
+    /* CURSOR */
+    .cursor { position: fixed; width: 10px; height: 10px; background: var(--red); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); transition: width .15s, height .15s; mix-blend-mode: difference; }
+    .cursor.big { width: 36px; height: 36px; }
+
+    /* GRAIN overlay */
+    .grain {
+      position: fixed; inset: 0; pointer-events: none; z-index: 50; opacity: .045;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+    }
+
+    /* PROGRESS */
+    .progress { position: fixed; bottom: 0; left: 0; right: 0; height: 3px; background: #1a1a1a; z-index: 100; }
+    .progress-fill { height: 100%; background: var(--red); transition: width .25s cubic-bezier(.4,0,.2,1); }
+
+    /* DOTS */
+    .nav { position: fixed; right: 36px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 10px; z-index: 100; }
+    .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--muted); cursor: pointer; transition: background .2s, transform .2s; }
+    .dot.active { background: var(--red); transform: scale(1.8); }
+
+    /* COUNTER */
+    .counter { position: fixed; bottom: 24px; right: 52px; font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: .1em; color: var(--muted); z-index: 100; }
+    .counter em { color: var(--red); font-style: normal; }
+
+    /* HINT */
+    .hint { position: fixed; bottom: 24px; left: 52px; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); z-index: 100; transition: opacity .3s; }
+
+    /* DECK & SLIDES */
+    .deck { width: 100vw; height: 100vh; position: relative; }
+    .slide { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity .18s ease; }
+    .slide.active { opacity: 1; pointer-events: all; }
+
+    /* ── S1 CAPA ── */
+    #s1 {
+      background: var(--black);
+      display: flex; flex-direction: column; justify-content: space-between;
+      padding: 52px 72px;
+    }
+    .s1-top { display: flex; justify-content: space-between; align-items: center; }
+    .s1-brand { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
+    .s1-tag { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--red); }
+
+    .s1-mid { flex: 1; display: flex; flex-direction: column; justify-content: center; position: relative; }
+    .s1-kicker {
+      font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--red);
+      margin-bottom: 14px;
+      opacity: 0; transform: translateY(18px);
+      animation: up .5s .15s forwards;
+    }
+    .s1-h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(72px, 11vw, 148px);
+      line-height: .87; letter-spacing: .01em; color: var(--white);
+      opacity: 0; transform: translateY(28px);
+      animation: up .6s .3s forwards;
+    }
+    .s1-h1 em { font-style: normal; color: var(--red); display: block; }
+    .s1-sub {
+      margin-top: 24px; font-size: 15px; color: var(--muted); font-weight: 300;
+      max-width: 440px; line-height: 1.65;
+      opacity: 0; transform: translateY(18px);
+      animation: up .5s .5s forwards;
+    }
+    /* big GROW watermark */
+    .s1-wm {
+      position: absolute; right: -20px; bottom: -60px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(120px, 18vw, 260px);
+      color: rgba(232,50,26,.06); line-height: 1; letter-spacing: .05em;
+      pointer-events: none; user-select: none;
+      opacity: 0; animation: fadein .8s .8s forwards;
+    }
+
+    .s1-bot { display: flex; justify-content: space-between; align-items: flex-end; }
+    .s1-author { opacity: 0; transform: translateY(14px); animation: up .45s .7s forwards; }
+    .s1-author-name { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: .08em; color: var(--white); }
+    .s1-author-role { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-top: 3px; }
+    .s1-line { width: 1px; height: 60px; background: var(--grey2); opacity: 0; animation: fadein .4s .9s forwards; }
+
+    /* ── S2 REALITY ── */
+    #s2 { background: var(--black); display: flex; flex-direction: column; padding: 52px 72px; gap: 16px; }
+    .slide-label {
+      font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--red);
+      display: flex; align-items: center; gap: 14px; flex-shrink: 0;
+    }
+    .slide-label::after { content: ''; flex: 1; height: 1px; background: var(--grey2); }
+
+    .s2-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; flex: 1; }
+    .s2-card { background: var(--grey); padding: 36px 32px; display: flex; flex-direction: column; justify-content: space-between; }
+    .s2-card.hi { background: var(--red); }
+    .s2-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(56px, 7vw, 96px); line-height: 1; color: var(--white);
+    }
+    .s2-card.hi .s2-num { color: var(--black); }
+    .s2-txt { font-size: 14px; color: rgba(247,244,240,.6); font-weight: 300; line-height: 1.55; }
+    .s2-card.hi .s2-txt { color: rgba(7,7,7,.7); }
+
+    .s2-bar { background: var(--grey); padding: 24px 32px; display: flex; gap: 20px; align-items: center; flex-shrink: 0; }
+    .s2-bar-label { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: .06em; color: var(--red); flex-shrink: 0; }
+    .s2-bar-text { font-size: 13px; color: rgba(247,244,240,.5); line-height: 1.5; font-weight: 300; }
+
+    /* ── S3 OPPORTUNITY ── */
+    #s3 { background: var(--black); display: grid; grid-template-rows: auto 1fr; padding: 52px 72px; gap: 36px; }
+    .s3-body { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+    .s3-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(48px, 6vw, 80px); line-height: .9; color: var(--white); letter-spacing: .02em; }
+    .s3-title em { font-style: normal; color: var(--red); display: block; }
+    .s3-desc { margin-top: 20px; font-size: 14px; color: var(--muted); line-height: 1.75; font-weight: 300; }
+    .s3-desc strong { color: var(--white); }
+    .s3-items { display: flex; flex-direction: column; gap: 2px; }
+    .s3-item { background: var(--grey); padding: 22px 26px; display: flex; gap: 18px; }
+    .s3-item.hi { background: #180800; border-left: 2px solid var(--red); }
+    .s3-item-n { font-family: 'Bebas Neue', sans-serif; font-size: 30px; color: var(--red); opacity: .5; line-height: 1; flex-shrink: 0; }
+    .s3-item.hi .s3-item-n { opacity: 1; }
+    .s3-item-title { font-size: 13px; font-weight: 500; color: var(--white); margin-bottom: 3px; }
+    .s3-item-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+    /* ── S4 GROW MÉTODO ── */
+    #s4 { background: var(--black); display: grid; grid-template-rows: auto 1fr; padding: 52px 72px; gap: 28px; }
+    .s4-cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
+    .s4-col { background: var(--grey); padding: 36px 28px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; transition: background .2s; }
+    .s4-col:hover { background: var(--grey2); }
+    .s4-col.hi { background: var(--red); }
+    .s4-col.hi:hover { background: var(--red2); }
+    /* big letter bg */
+    .s4-col::before {
+      content: attr(data-letter);
+      position: absolute; top: -20px; right: -10px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 160px; line-height: 1;
+      color: rgba(255,255,255,.04);
+      pointer-events: none;
+    }
+    .s4-col.hi::before { color: rgba(0,0,0,.1); }
+    .s4-letter { font-family: 'Bebas Neue', sans-serif; font-size: clamp(72px, 8vw, 110px); line-height: 1; color: var(--white); }
+    .s4-col.hi .s4-letter { color: var(--black); }
+    .s4-word { font-family: 'Bebas Neue', sans-serif; font-size: 14px; letter-spacing: .12em; color: rgba(247,244,240,.3); margin-bottom: 8px; }
+    .s4-col.hi .s4-word { color: rgba(7,7,7,.45); }
+    .s4-def { font-size: 12px; color: rgba(247,244,240,.65); line-height: 1.6; font-weight: 300; }
+    .s4-col.hi .s4-def { color: rgba(7,7,7,.7); }
+
+    /* ── S5 WILL / MOVIMENTOS ── */
+    #s5 { background: var(--black); display: grid; grid-template-columns: 300px 1fr; gap: 64px; align-items: center; padding: 52px 72px; }
+    .s5-left {}
+    .s5-tag { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--red); margin-bottom: 16px; }
+    .s5-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(52px, 7vw, 88px); line-height: .88; color: var(--white); }
+    .s5-title em { font-style: normal; color: var(--red); display: block; }
+    .s5-body { margin-top: 18px; font-size: 13px; color: var(--muted); line-height: 1.7; font-weight: 300; }
+    .s5-moves { display: flex; flex-direction: column; gap: 2px; }
+    .s5-move { background: var(--grey); padding: 22px 26px; display: grid; grid-template-columns: 44px 1fr; gap: 18px; align-items: center; transition: background .18s; }
+    .s5-move:hover { background: #180800; }
+    .s5-move-n { font-family: 'Bebas Neue', sans-serif; font-size: 38px; color: var(--red); opacity: .3; line-height: 1; text-align: center; transition: opacity .18s; }
+    .s5-move:hover .s5-move-n { opacity: 1; }
+    .s5-move-title { font-size: 13px; font-weight: 500; color: var(--white); margin-bottom: 3px; }
+    .s5-move-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+    /* ── S6 CTA ── */
+    #s6 { background: var(--red); display: flex; flex-direction: column; justify-content: space-between; padding: 52px 72px; }
+    .s6-top { display: flex; justify-content: space-between; align-items: center; }
+    .s6-brand { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: rgba(7,7,7,.45); }
+    .s6-mid { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+    .s6-kicker { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: rgba(7,7,7,.5); margin-bottom: 14px; }
+    .s6-h2 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(72px, 11vw, 148px); line-height: .87; color: var(--black); letter-spacing: .01em; }
+    .s6-sub { margin-top: 22px; font-size: 15px; color: rgba(7,7,7,.6); font-weight: 300; max-width: 500px; line-height: 1.65; }
+    .s6-bot { display: flex; justify-content: space-between; align-items: flex-end; }
+    .s6-contact { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: .08em; color: rgba(7,7,7,.6); }
+    .s6-grow { font-family: 'Bebas Neue', sans-serif; font-size: 56px; letter-spacing: .1em; color: rgba(7,7,7,.12); line-height: 1; }
+
+    /* ANIMS */
+    @keyframes up { to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadein { to { opacity: 1; } }
+    @keyframes countup { from { opacity: 0; } to { opacity: 1; } }
+
+    .slide.active .anim {
+      opacity: 0; transform: translateY(20px);
+      animation: up .45s forwards;
+    }
+    .slide.active .anim:nth-child(1) { animation-delay: .04s; }
+    .slide.active .anim:nth-child(2) { animation-delay: .12s; }
+    .slide.active .anim:nth-child(3) { animation-delay: .2s; }
+    .slide.active .anim:nth-child(4) { animation-delay: .28s; }
+    .slide.active .anim:nth-child(5) { animation-delay: .36s; }
+
+    /* mobile */
+    @media (max-width: 768px) {
+      .slide { padding: 32px 24px !important; }
+      .s2-grid, .s4-cols { grid-template-columns: 1fr 1fr; }
+      #s3 .s3-body, #s5 { grid-template-columns: 1fr; gap: 28px; }
+      .s1-wm, .nav { display: none; }
+    }
+    @media print { .cursor, .grain, .progress, .nav, .counter, .hint { display: none; } }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="grain"></div>
+<div class="progress"><div class="progress-fill" id="pFill"></div></div>
+<nav class="nav" id="navDots"></nav>
+<div class="counter"><em id="cCur">1</em> / <span id="cTot">6</span></div>
+<div class="hint" id="hint">← → para navegar</div>
+
+<div class="deck" id="deck">
+
+  <!-- S1 CAPA -->
+  <div class="slide active" id="s1">
+    <div class="s1-top">
+      <span class="s1-brand">Joel Jota · Palestra</span>
+      <span class="s1-tag">Metodologia G.R.O.W</span>
+    </div>
+    <div class="s1-mid">
+      <p class="s1-kicker">A estrutura que transforma apresentações em resultados</p>
+      <h1 class="s1-h1">APRESENTAÇÕES<br /><em>QUE VENDEM</em></h1>
+      <p class="s1-sub">Por que 90% das apresentações falham — e como garantir que a sua seja a exceção.</p>
+      <div class="s1-wm">GROW</div>
+    </div>
+    <div class="s1-bot">
+      <div class="s1-author">
+        <div class="s1-author-name">JOEL JOTA</div>
+        <div class="s1-author-role">Empresário · Mentor · Autor Best-seller · 2M inscritos</div>
+      </div>
+      <div class="s1-line"></div>
+    </div>
+  </div>
+
+  <!-- S2 REALITY -->
+  <div class="slide" id="s2">
+    <div class="slide-label anim">R · Reality — O cenário atual</div>
+    <div class="s2-grid anim">
+      <div class="s2-card hi">
+        <div class="s2-num" data-target="90" data-suffix="%">0%</div>
+        <div class="s2-txt">das apresentações não geram nenhuma ação concreta após o evento</div>
+      </div>
+      <div class="s2-card">
+        <div class="s2-num">7 seg</div>
+        <div class="s2-txt">é o tempo que o público leva para decidir se vai prestar atenção em você</div>
+      </div>
+      <div class="s2-card">
+        <div class="s2-num" data-target="3" data-suffix="x">0x</div>
+        <div class="s2-txt">mais resultado geram apresentações com estrutura clara vs improvisadas</div>
+      </div>
+    </div>
+    <div class="s2-bar anim">
+      <span class="s2-bar-label">O DIAGNÓSTICO</span>
+      <span class="s2-bar-text">O problema não é falta de conteúdo — é falta de estrutura. A apresentação gira em volta de si mesma sem nunca chegar em lugar nenhum. E o público percebe.</span>
+    </div>
+  </div>
+
+  <!-- S3 OPPORTUNITY -->
+  <div class="slide" id="s3">
+    <div class="slide-label anim">O · Opportunity — O gap que quase ninguém percebe</div>
+    <div class="s3-body">
+      <div class="anim">
+        <h2 class="s3-title">O BURACO<br /><em>QUE NINGUÉM<br />ESTÁ TAPANDO</em></h2>
+        <p class="s3-desc">Enquanto todo mundo investe em slides mais bonitos, os melhores do mundo investem em <strong>estrutura narrativa</strong>. Quem dominar isso primeiro larga na frente — e fica.</p>
+      </div>
+      <div class="s3-items anim">
+        <div class="s3-item hi">
+          <div class="s3-item-n">01</div>
+          <div>
+            <div class="s3-item-title">Quem tem estrutura converte 3x mais</div>
+            <div class="s3-item-desc">Uma apresentação com fio condutor claro converte muito mais do que uma tecnicamente perfeita sem narrativa.</div>
+          </div>
+        </div>
+        <div class="s3-item">
+          <div class="s3-item-n">02</div>
+          <div>
+            <div class="s3-item-title">O público decide nos primeiros 30 segundos</div>
+            <div class="s3-item-desc">Se você não declarou o objetivo logo de início, já perdeu metade da atenção — mesmo antes do segundo slide.</div>
+          </div>
+        </div>
+        <div class="s3-item">
+          <div class="s3-item-n">03</div>
+          <div>
+            <div class="s3-item-title">Design não salva conteúdo sem estrutura</div>
+            <div class="s3-item-desc">Slide bonito sem narrativa é decoração. Narrativa forte com slide simples ainda vende. A ordem importa.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 MÉTODO GROW -->
+  <div class="slide" id="s4">
+    <div class="slide-label anim">G · Goals — O método que resolve isso</div>
+    <div class="s4-cols anim">
+      <div class="s4-col hi" data-letter="G">
+        <div class="s4-letter">G</div>
+        <div>
+          <div class="s4-word">GOALS</div>
+          <div class="s4-def">Declare o objetivo nos primeiros segundos. O que exatamente acontece nessa apresentação? O público precisa saber o destino antes da viagem começar.</div>
+        </div>
+      </div>
+      <div class="s4-col" data-letter="R">
+        <div class="s4-letter">R</div>
+        <div>
+          <div class="s4-word">REALITY</div>
+          <div class="s4-def">Apresente o cenário atual com fatos frios. Sem viés positivo nem negativo. A realidade nua já é persuasiva o suficiente.</div>
+        </div>
+      </div>
+      <div class="s4-col" data-letter="O">
+        <div class="s4-letter">O</div>
+        <div>
+          <div class="s4-word">OPPORTUNITY</div>
+          <div class="s4-def">Mostre o gap. Existe uma chance que quase ninguém está percebendo. Seu trabalho é apontar o buraco — e a saída.</div>
+        </div>
+      </div>
+      <div class="s4-col" data-letter="W">
+        <div class="s4-letter">W</div>
+        <div>
+          <div class="s4-word">WILL</div>
+          <div class="s4-def">Conclua com ação. Sem CTA específico, toda apresentação anterior foi entretenimento — não negócio.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 WILL / 4 MOVIMENTOS -->
+  <div class="slide" id="s5">
+    <div class="s5-left">
+      <p class="s5-tag anim">W · Will — Aplicação prática</p>
+      <h2 class="s5-title anim">OS 4<br /><em>MOVI-<br />MENTOS</em></h2>
+      <p class="s5-body anim">Aplique o GROW em qualquer apresentação — de 5 minutos a 2 horas. O método escala. O resultado também.</p>
+    </div>
+    <div class="s5-moves anim">
+      <div class="s5-move">
+        <div class="s5-move-n">01</div>
+        <div>
+          <div class="s5-move-title">Defina o G antes de montar qualquer slide</div>
+          <div class="s5-move-desc">Qual decisão você quer que o público tome ao sair? Se você não sabe responder em uma frase, o público também não vai saber.</div>
+        </div>
+      </div>
+      <div class="s5-move">
+        <div class="s5-move-n">02</div>
+        <div>
+          <div class="s5-move-title">Levante os dados do R com antecedência</div>
+          <div class="s5-move-desc">Números, pesquisas, fatos verificáveis. Quanto mais específico, mais credível. Generalidades que o público já sabe não funcionam.</div>
+        </div>
+      </div>
+      <div class="s5-move">
+        <div class="s5-move-n">03</div>
+        <div>
+          <div class="s5-move-title">Torne o O pessoal e urgente</div>
+          <div class="s5-move-desc">A oportunidade precisa ser sentida agora. Use dados do cenário do próprio público — não exemplos genéricos de outro mercado.</div>
+        </div>
+      </div>
+      <div class="s5-move">
+        <div class="s5-move-n">04</div>
+        <div>
+          <div class="s5-move-title">Feche o W com um único CTA</div>
+          <div class="s5-move-desc">Uma ação, não quatro. Quem sai com três próximos passos não dá nenhum. Escolha o mais importante e seja direto.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6 CTA -->
+  <div class="slide" id="s6">
+    <div class="s6-top">
+      <span class="s6-brand">Joel Jota · Metodologia G.R.O.W</span>
+    </div>
+    <div class="s6-mid">
+      <p class="s6-kicker">Sua próxima apresentação</p>
+      <h2 class="s6-h2">COMEÇA<br />AGORA.</h2>
+      <p class="s6-sub">Você já tem o conteúdo. Falta a estrutura que faz ele vender. Aplique o GROW na sua próxima apresentação — e meça a diferença.</p>
+    </div>
+    <div class="s6-bot">
+      <div>
+        <div class="s6-contact">@JOELJOTA</div>
+        <div class="s6-contact" style="opacity:.4;font-size:15px;letter-spacing:.06em;">joeljota.com.br</div>
+      </div>
+      <div class="s6-grow">GROW</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ── CURSOR
+  const cur = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => { cur.style.left = e.clientX+'px'; cur.style.top = e.clientY+'px'; });
+  document.querySelectorAll('.dot').forEach(d => { d.addEventListener('mouseenter',()=>cur.classList.add('big')); d.addEventListener('mouseleave',()=>cur.classList.remove('big')); });
+
+  // ── SLIDES
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let cur_i = 0;
+
+  // build dots
+  const navEl = document.getElementById('navDots');
+  for (let i = 0; i < total; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i===0?' active':'');
+    d.addEventListener('click', () => goTo(i));
+    navEl.appendChild(d);
+  }
+  document.getElementById('cTot').textContent = total;
+
+  function goTo(idx) {
+    slides[cur_i].classList.remove('active');
+    // reset anim
+    slides[cur_i].querySelectorAll('.anim').forEach(el => { el.style.animation='none'; void el.offsetWidth; });
+    cur_i = ((idx % total) + total) % total;
+    slides[cur_i].classList.add('active');
+    slides[cur_i].querySelectorAll('.anim').forEach(el => { el.style.animation=''; });
+    document.getElementById('cCur').textContent = cur_i + 1;
+    document.getElementById('pFill').style.width = ((cur_i+1)/total*100)+'%';
+    document.querySelectorAll('.dot').forEach((d,i) => d.classList.toggle('active', i===cur_i));
+    document.getElementById('hint').style.opacity = cur_i === total-1 ? '0' : '1';
+    // trigger counters on s2
+    if (cur_i === 1) startCounters();
+  }
+
+  // ── COUNT UP ANIMATION
+  function startCounters() {
+    document.querySelectorAll('[data-target]').forEach(el => {
+      const target = parseInt(el.dataset.target);
+      const suffix = el.dataset.suffix || '';
+      const dur = 900;
+      const start = performance.now();
+      function tick(now) {
+        const p = Math.min((now - start) / dur, 1);
+        const ease = 1 - Math.pow(1-p, 3);
+        el.textContent = Math.round(ease * target) + suffix;
+        if (p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+  }
+
+  // ── KEYBOARD + CLICK
+  document.addEventListener('keydown', e => {
+    if (e.key==='ArrowRight'||e.key===' ') { e.preventDefault(); goTo(cur_i+1); }
+    if (e.key==='ArrowLeft') { e.preventDefault(); goTo(cur_i-1); }
+  });
+  document.getElementById('deck').addEventListener('click', e => {
+    if (e.target.closest('.dot')) return;
+    goTo(e.clientX > window.innerWidth/2 ? cur_i+1 : cur_i-1);
+  });
+
+  // init
+  document.getElementById('pFill').style.width = (1/total*100)+'%';
+</script>
+</body>
+</html>

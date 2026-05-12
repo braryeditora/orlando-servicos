@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Escoliose — Dra. Amanda Pereira</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black:   #080406;
+      --wine:    #7B2540;
+      --wine2:   #9B3050;
+      --wine-dim:#2A0D16;
+      --cream:   #F5F0EC;
+      --white:   #FAF8F6;
+      --grey:    #120910;
+      --grey2:   #1C1218;
+      --muted:   #5A3A48;
+    }
+
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html, body { width:100%; height:100%; overflow:hidden; background:var(--black); font-family:'DM Sans',sans-serif; -webkit-font-smoothing:antialiased; cursor:none; }
+
+    /* CURSOR */
+    .cursor { position:fixed; width:10px; height:10px; background:var(--wine); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); transition:width .15s,height .15s; mix-blend-mode:difference; }
+    .cursor.big { width:34px; height:34px; }
+
+    /* GRAIN */
+    .grain { position:fixed; inset:0; pointer-events:none; z-index:50; opacity:.04;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size:200px; }
+
+    /* PROGRESS */
+    .progress { position:fixed; bottom:0; left:0; right:0; height:3px; background:#1c1218; z-index:100; }
+    .progress-fill { height:100%; background:var(--wine); transition:width .22s cubic-bezier(.4,0,.2,1); }
+
+    /* DOTS */
+    .nav { position:fixed; right:36px; top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:10px; z-index:100; }
+    .dot { width:5px; height:5px; border-radius:50%; background:var(--muted); cursor:pointer; transition:background .2s,transform .2s; }
+    .dot.active { background:var(--wine); transform:scale(1.8); }
+
+    /* COUNTER */
+    .counter { position:fixed; bottom:24px; right:52px; font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:.1em; color:var(--muted); z-index:100; }
+    .counter em { color:var(--wine); font-style:normal; }
+
+    /* HINT */
+    .hint { position:fixed; bottom:24px; left:52px; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); z-index:100; transition:opacity .3s; }
+
+    /* TIMER */
+    .timer { position:fixed; top:24px; right:52px; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); z-index:100; display:flex; gap:6px; align-items:center; }
+    .timer-dot { width:6px; height:6px; background:var(--wine); border-radius:50%; }
+    #timerDisplay { color:var(--wine2); font-family:'Bebas Neue',sans-serif; font-size:16px; }
+
+    /* DECK */
+    .deck { width:100vw; height:100vh; position:relative; }
+    .slide { position:absolute; inset:0; opacity:0; pointer-events:none; transition:opacity .18s ease; }
+    .slide.active { opacity:1; pointer-events:all; }
+
+    /* ── S1 CAPA ── */
+    #s1 { background:var(--black); display:flex; flex-direction:column; justify-content:space-between; padding:52px 72px; overflow:hidden; }
+
+    /* spine SVG decoration */
+    .spine-deco { position:absolute; right:80px; top:50%; transform:translateY(-50%); opacity:.06; }
+
+    .s1-top { display:flex; justify-content:space-between; align-items:center; position:relative; z-index:1; }
+    .s1-brand { font-size:10px; letter-spacing:.22em; text-transform:uppercase; color:var(--muted); }
+    .s1-tag { font-size:10px; letter-spacing:.22em; text-transform:uppercase; color:var(--wine); border:1px solid var(--wine-dim); padding:4px 12px; }
+
+    .s1-mid { flex:1; display:flex; flex-direction:column; justify-content:center; position:relative; z-index:1; max-width:700px; }
+
+    .s1-rule { width:40px; height:2px; background:var(--wine); margin-bottom:20px; opacity:0; transform:scaleX(0); transform-origin:left; animation:scaleIn .5s .1s forwards; }
+    @keyframes scaleIn { to { opacity:1; transform:scaleX(1); } }
+
+    .s1-kicker { font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--wine2); margin-bottom:14px; opacity:0; transform:translateY(16px); animation:up .5s .2s forwards; }
+    .s1-h1 { font-family:'Bebas Neue',sans-serif; font-size:clamp(64px,10vw,130px); line-height:.88; letter-spacing:.01em; color:var(--white); opacity:0; transform:translateY(28px); animation:up .65s .32s forwards; }
+    .s1-h1 em { font-style:normal; color:var(--wine); display:block; }
+    .s1-h1 small { font-size:.42em; letter-spacing:.18em; color:rgba(250,248,246,.35); display:block; margin-top:8px; }
+    .s1-sub { margin-top:24px; font-size:15px; color:var(--muted); font-weight:300; max-width:520px; line-height:1.7; border-left:2px solid var(--wine-dim); padding-left:16px; opacity:0; transform:translateY(16px); animation:up .5s .55s forwards; }
+
+    .s1-bot { display:flex; justify-content:space-between; align-items:flex-end; position:relative; z-index:1; }
+    .s1-author { opacity:0; transform:translateY(14px); animation:up .45s .75s forwards; }
+    .s1-author-name { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:.08em; color:var(--white); }
+    .s1-author-role { font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-top:3px; line-height:1.6; }
+    .s1-creds { display:flex; gap:8px; flex-wrap:wrap; opacity:0; animation:fadein .5s .9s forwards; }
+    .s1-cred { border:1px solid var(--wine-dim); padding:4px 10px; font-size:9px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+
+    /* ── S2 REALITY ── */
+    #s2 { background:var(--black); display:flex; flex-direction:column; padding:52px 72px; gap:14px; }
+    .slide-label { font-size:10px; letter-spacing:.22em; text-transform:uppercase; color:var(--wine); display:flex; align-items:center; gap:14px; flex-shrink:0; }
+    .slide-label::after { content:''; flex:1; height:1px; background:var(--grey2); }
+
+    .s2-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:2px; flex:1; }
+    .s2-card { background:var(--grey); padding:32px 28px; display:flex; flex-direction:column; justify-content:space-between; }
+    .s2-card.hi { background:var(--wine); }
+    .s2-num { font-family:'Bebas Neue',sans-serif; font-size:clamp(52px,6vw,86px); line-height:1; color:var(--white); }
+    .s2-card.hi .s2-num { color:var(--cream); }
+    .s2-txt { font-size:13px; color:rgba(250,248,246,.5); font-weight:300; line-height:1.55; }
+    .s2-card.hi .s2-txt { color:rgba(245,240,236,.75); }
+
+    .s2-bar { background:var(--grey); padding:22px 28px; display:flex; gap:20px; align-items:flex-start; flex-shrink:0; }
+    .s2-bar-label { font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:.06em; color:var(--wine); flex-shrink:0; padding-top:2px; }
+    .s2-bar-text { font-size:13px; color:rgba(250,248,246,.4); line-height:1.55; font-weight:300; }
+    .s2-bar-text strong { color:rgba(250,248,246,.75); font-weight:500; }
+
+    /* ── S3 VIRADA ── */
+    #s3 { background:var(--black); display:grid; grid-template-rows:auto 1fr; padding:52px 72px; gap:28px; }
+    .s3-body { display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:start; }
+    .s3-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(44px,5.5vw,72px); line-height:.9; color:var(--white); }
+    .s3-title em { font-style:normal; color:var(--wine); display:block; }
+    .s3-desc { margin-top:18px; font-size:14px; color:var(--muted); line-height:1.75; font-weight:300; }
+    .s3-desc strong { color:var(--white); }
+    .s3-right { display:flex; flex-direction:column; gap:2px; }
+    .s3-item { background:var(--grey); padding:20px 24px; display:flex; gap:16px; }
+    .s3-item.hi { background:var(--wine-dim); border-left:2px solid var(--wine); }
+    .s3-n { font-family:'Bebas Neue',sans-serif; font-size:26px; color:var(--wine); opacity:.4; line-height:1; flex-shrink:0; transition:opacity .2s; }
+    .s3-item.hi .s3-n { opacity:1; }
+    .s3-item-title { font-size:13px; font-weight:500; color:var(--white); margin-bottom:3px; }
+    .s3-item-desc { font-size:12px; color:var(--muted); line-height:1.5; }
+
+    /* ── S4 PROTOCOLO ── */
+    #s4 { background:var(--black); display:grid; grid-template-rows:auto 1fr; padding:52px 72px; gap:28px; }
+    .s4-cols { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; }
+    .s4-col { background:var(--grey); padding:32px 24px; display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden; transition:background .2s; }
+    .s4-col:hover { background:var(--grey2); }
+    .s4-col.hi { background:var(--wine); }
+    .s4-col::before { content:attr(data-n); position:absolute; bottom:-20px; right:-8px; font-family:'Bebas Neue',sans-serif; font-size:120px; line-height:1; color:rgba(255,255,255,.04); pointer-events:none; }
+    .s4-col.hi::before { color:rgba(0,0,0,.08); }
+    .s4-num { font-family:'Bebas Neue',sans-serif; font-size:clamp(60px,7vw,96px); line-height:1; color:var(--white); }
+    .s4-col.hi .s4-num { color:rgba(245,240,236,.9); }
+    .s4-pilar { font-family:'Bebas Neue',sans-serif; font-size:14px; letter-spacing:.08em; color:rgba(250,248,246,.3); margin-bottom:6px; }
+    .s4-col.hi .s4-pilar { color:rgba(245,240,236,.5); }
+    .s4-def { font-size:12px; color:rgba(250,248,246,.55); line-height:1.6; font-weight:300; }
+    .s4-col.hi .s4-def { color:rgba(245,240,236,.75); }
+
+    /* ── S5 PITCH ── */
+    #s5 { background:var(--black); display:grid; grid-template-columns:1fr 1fr; gap:2px; padding:0; }
+    .s5-left { background:var(--wine); padding:52px 48px; display:flex; flex-direction:column; justify-content:space-between; }
+    .s5-right { background:var(--grey); padding:52px 48px; display:flex; flex-direction:column; justify-content:space-between; }
+
+    .s5-tag { font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:rgba(245,240,236,.55); margin-bottom:16px; }
+    .s5-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(44px,5vw,68px); line-height:.9; color:var(--cream); }
+    .s5-desc { margin-top:16px; font-size:14px; color:rgba(245,240,236,.65); line-height:1.7; font-weight:300; }
+
+    .s5-modules { display:flex; flex-direction:column; gap:2px; flex:1; margin-top:16px; }
+    .s5-mod { background:rgba(245,240,236,.08); padding:12px 16px; font-size:12px; color:rgba(245,240,236,.7); line-height:1.4; }
+    .s5-mod strong { color:var(--cream); font-size:10px; letter-spacing:.1em; text-transform:uppercase; display:block; margin-bottom:2px; }
+
+    .s5-invest { margin-top:auto; }
+    .s5-invest-label { font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:rgba(245,240,236,.4); margin-bottom:8px; }
+    .s5-invest-val { font-family:'Bebas Neue',sans-serif; font-size:56px; line-height:1; color:var(--cream); }
+    .s5-invest-alt { font-size:12px; color:rgba(245,240,236,.45); margin-top:4px; }
+
+    .s5-items { display:flex; flex-direction:column; gap:2px; }
+    .s5-item { background:var(--grey2); padding:18px 20px; }
+    .s5-item-label { font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:var(--wine2); margin-bottom:4px; }
+    .s5-item-text { font-size:13px; color:rgba(250,248,246,.7); line-height:1.45; }
+
+    .s5-cta { margin-top:auto; background:var(--wine); padding:16px 24px; text-align:center; cursor:pointer; }
+    .s5-cta-text { font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:.08em; color:var(--cream); }
+    .s5-cta-sub { font-size:11px; color:rgba(245,240,236,.6); margin-top:2px; }
+
+    /* ── S6 CTA ── */
+    #s6 { background:var(--wine); display:flex; flex-direction:column; justify-content:space-between; padding:52px 72px; position:relative; overflow:hidden; }
+    #s6::before { content:''; position:absolute; width:500px; height:500px; border-radius:50%; background:rgba(0,0,0,.1); top:-200px; right:-150px; pointer-events:none; }
+    #s6::after { content:''; position:absolute; width:300px; height:300px; border-radius:50%; background:rgba(0,0,0,.07); bottom:-100px; left:10%; pointer-events:none; }
+
+    .s6-top { display:flex; justify-content:space-between; position:relative; z-index:1; }
+    .s6-brand { font-size:10px; letter-spacing:.22em; text-transform:uppercase; color:rgba(245,240,236,.4); }
+    .s6-mid { flex:1; display:flex; flex-direction:column; justify-content:center; position:relative; z-index:1; }
+    .s6-kicker { font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:rgba(245,240,236,.5); margin-bottom:14px; }
+    .s6-h2 { font-family:'Bebas Neue',sans-serif; font-size:clamp(64px,10vw,130px); line-height:.87; color:var(--cream); }
+    .s6-h2 em { font-style:normal; display:block; color:rgba(245,240,236,.45); font-size:.65em; letter-spacing:.04em; }
+    .s6-sub { margin-top:22px; font-size:15px; color:rgba(245,240,236,.6); font-weight:300; max-width:520px; line-height:1.65; }
+    .s6-bot { display:flex; justify-content:space-between; align-items:flex-end; position:relative; z-index:1; }
+    .s6-contact { font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:.08em; color:rgba(245,240,236,.55); }
+    .s6-vagas { text-align:right; }
+    .s6-vagas-num { font-family:'Bebas Neue',sans-serif; font-size:56px; color:var(--cream); line-height:1; }
+    .s6-vagas-label { font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:rgba(245,240,236,.45); }
+
+    /* ANIMS */
+    @keyframes up { to { opacity:1; transform:translateY(0); } }
+    @keyframes fadein { to { opacity:1; } }
+    .slide.active .anim { opacity:0; transform:translateY(20px); animation:up .45s forwards; }
+    .slide.active .anim:nth-child(1) { animation-delay:.04s; }
+    .slide.active .anim:nth-child(2) { animation-delay:.12s; }
+    .slide.active .anim:nth-child(3) { animation-delay:.2s; }
+    .slide.active .anim:nth-child(4) { animation-delay:.28s; }
+    .slide.active .anim:nth-child(5) { animation-delay:.36s; }
+
+    @media (max-width:768px) {
+      .slide { padding:32px 24px !important; }
+      .s2-grid,.s4-cols { grid-template-columns:1fr 1fr; }
+      .s3-body,#s5 { grid-template-columns:1fr; }
+      .nav { display:none; }
+    }
+    @media print { .cursor,.grain,.progress,.nav,.counter,.hint,.timer { display:none; } }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="grain"></div>
+<div class="progress"><div class="progress-fill" id="pFill"></div></div>
+<nav class="nav" id="navDots"></nav>
+<div class="counter"><em id="cCur">1</em> / <span id="cTot">6</span></div>
+<div class="hint" id="hint">← → para navegar · Clique para avançar</div>
+<div class="timer"><div class="timer-dot"></div> <span id="timerDisplay">00:00</span></div>
+
+<div class="deck" id="deck">
+
+  <!-- S1 CAPA -->
+  <div class="slide active" id="s1">
+    <!-- spine decoration -->
+    <svg class="spine-deco" width="120" height="500" viewBox="0 0 120 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="60" cy="50" rx="40" ry="22" stroke="white" stroke-width="1.5"/>
+      <line x1="60" y1="72" x2="60" y2="100" stroke="white" stroke-width="1.5"/>
+      <ellipse cx="60" cy="120" rx="40" ry="22" stroke="white" stroke-width="1.5"/>
+      <line x1="60" y1="142" x2="60" y2="170" stroke="white" stroke-width="1.5"/>
+      <ellipse cx="60" cy="190" rx="40" ry="22" stroke="white" stroke-width="1.5"/>
+      <line x1="60" y1="212" x2="60" y2="240" stroke="white" stroke-width="1.5"/>
+      <ellipse cx="60" cy="260" rx="40" ry="22" stroke="white" stroke-width="1.5"/>
+      <line x1="60" y1="282" x2="60" y2="310" stroke="white" stroke-width="1.5"/>
+      <ellipse cx="60" cy="330" rx="40" ry="22" stroke="white" stroke-width="1.5"/>
+      <line x1="60" y1="352" x2="60" y2="380" stroke="white" stroke-width="1.5"/>
+      <ellipse cx="60" cy="400" rx="40" ry="22" stroke="white" stroke-width="1.5"/>
+      <line x1="60" y1="422" x2="60" y2="450" stroke="white" stroke-width="1.5"/>
+      <ellipse cx="60" cy="470" rx="40" ry="22" stroke="white" stroke-width="1.5"/>
+    </svg>
+
+    <div class="s1-top">
+      <span class="s1-brand">Dra. Amanda Pereira · Palestra Gratuita</span>
+      <span class="s1-tag">Scoliosis Method</span>
+    </div>
+    <div class="s1-mid">
+      <div class="s1-rule"></div>
+      <p class="s1-kicker">Workshop para Fisioterapeutas · Goiânia, GO</p>
+      <h1 class="s1-h1">
+        ESCOLIOSE:<br />
+        <em>O QUE A FACULDADE<br />NÃO TE ENSINOU</em>
+        <small>Protocolo · Avaliação 3D · Colete · Método</small>
+      </h1>
+      <p class="s1-sub">Por que a maioria dos fisioterapeutas trata escoliose sem protocolo — e como mudar isso agora, com base nas diretrizes SOSORT.</p>
+    </div>
+    <div class="s1-bot">
+      <div class="s1-author">
+        <div class="s1-author-name">DRA. AMANDA DA SILVA PEREIRA</div>
+        <div class="s1-author-role">Fisioterapeuta · Especialista em Escoliose, Posturologia e Osteopatia<br />Fundadora — Espaço Clínico Viver Bem · Goiânia, GO</div>
+      </div>
+      <div class="s1-creds">
+        <span class="s1-cred">Método Schroth</span>
+        <span class="s1-cred">S4D · SOSORT</span>
+        <span class="s1-cred">Colete Rigo-Chêneau 3D</span>
+        <span class="s1-cred">Scanner 3D</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 REALITY — O Problema -->
+  <div class="slide" id="s2">
+    <div class="slide-label anim">Bloco 2 · O Problema — O que a faculdade não ensina</div>
+    <div class="s2-grid anim">
+      <div class="s2-card hi">
+        <div class="s2-num" data-target="72" data-suffix="%">0%</div>
+        <div class="s2-txt">dos fisioterapeutas atendem escoliose sem um protocolo específico — improvisam a cada sessão</div>
+      </div>
+      <div class="s2-card">
+        <div class="s2-num">Cobb</div>
+        <div class="s2-txt">O ângulo de Cobb muda o plano de tratamento inteiro — mas poucos sabem interpretar e agir com base nele</div>
+      </div>
+      <div class="s2-card">
+        <div class="s2-num" data-target="3" data-suffix="x">0x</div>
+        <div class="s2-txt">mais chance de indicação cirúrgica quando o tratamento conservador é feito sem protocolo validado</div>
+      </div>
+    </div>
+    <div class="s2-bar anim">
+      <span class="s2-bar-label">O DIAGNÓSTICO</span>
+      <span class="s2-bar-text">A faculdade ensina anatomia da coluna. Não ensina a tratar escoliose. O resultado: pacientes que pioram, não por negligência — por falta de <strong>método</strong>. E isso tem solução.</span>
+    </div>
+  </div>
+
+  <!-- S3 VIRADA — Avaliação 3D e Protocolo -->
+  <div class="slide" id="s3">
+    <div class="slide-label anim">Bloco 3 · A Virada — O que muda com avaliação tridimensional</div>
+    <div class="s3-body">
+      <div class="anim">
+        <h2 class="s3-title">VOCÊ NÃO PODE<br /><em>TRATAR O QUE<br />NÃO CONSEGUE<br />VER.</em></h2>
+        <p class="s3-desc">A escoliose é uma deformidade <strong>tridimensional</strong>. Tratar com raciocínio bidimensional é tratar metade do problema. O scanner 3D e a baropodometria mudam o que você enxerga — e o que você prescreve.</p>
+      </div>
+      <div class="s3-right anim">
+        <div class="s3-item hi">
+          <div class="s3-n">01</div>
+          <div>
+            <div class="s3-item-title">Avaliação Tridimensional com Scanner 3D</div>
+            <div class="s3-item-desc">Identifica rotação vertebral, gibosidade e assimetrias que o exame clínico convencional não captura. Muda o diagnóstico e o plano.</div>
+          </div>
+        </div>
+        <div class="s3-item">
+          <div class="s3-n">02</div>
+          <div>
+            <div class="s3-item-title">Baropodometria aplicada à escoliose</div>
+            <div class="s3-item-desc">A distribuição de carga nos pés revela compensações posturais que a coluna está fazendo. Dado invisível — diferencial clínico real.</div>
+          </div>
+        </div>
+        <div class="s3-item">
+          <div class="s3-n">03</div>
+          <div>
+            <div class="s3-item-title">Colete Rigo-Chêneau 3D — quando indicar</div>
+            <div class="s3-item-desc">Não é pra todo paciente. Saber indicar corretamente — e saber quando NÃO indicar — é o que diferencia o especialista do generalista.</div>
+          </div>
+        </div>
+        <div class="s3-item">
+          <div class="s3-n">04</div>
+          <div>
+            <div class="s3-item-title">Método Schroth + S4D — a base do Protocolo</div>
+            <div class="s3-item-desc">Os dois métodos mais validados internacionalmente para escoliose — integrados numa abordagem clínica personalizada para cada curva.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 PROTOCOLO AMANDA PEREIRA -->
+  <div class="slide" id="s4">
+    <div class="slide-label anim">Bloco 4 · Prova Social — O Protocolo Amanda Pereira</div>
+    <div class="s4-cols anim">
+      <div class="s4-col hi" data-n="1">
+        <div class="s4-num">01</div>
+        <div>
+          <div class="s4-pilar">AVALIAR</div>
+          <div class="s4-def">Scanner 3D · Baropodometria · Ângulo de Cobb · Avaliação funcional respiratória e postural completa.</div>
+        </div>
+      </div>
+      <div class="s4-col" data-n="2">
+        <div class="s4-num">02</div>
+        <div>
+          <div class="s4-pilar">CLASSIFICAR</div>
+          <div class="s4-def">Tipo de curva · Grau de progressão · Faixa etária · Indicação ou não de colete — raciocínio clínico baseado em SOSORT.</div>
+        </div>
+      </div>
+      <div class="s4-col" data-n="3">
+        <div class="s4-num">03</div>
+        <div>
+          <div class="s4-pilar">TRATAR</div>
+          <div class="s4-def">Protocolo Schroth + S4D · Pilates Clínico · Osteopatia Estrutural e Visceral · Podoposturologia integrada.</div>
+        </div>
+      </div>
+      <div class="s4-col" data-n="4">
+        <div class="s4-num">04</div>
+        <div>
+          <div class="s4-pilar">MONITORAR</div>
+          <div class="s4-def">Reavaliação periódica com scanner · Ajuste de colete · Comunicação com equipe médica · Prevenção cirúrgica ativa.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 PITCH — Programa de Formação -->
+  <div class="slide" id="s5">
+    <div class="s5-left">
+      <div>
+        <p class="s5-tag">Bloco 5 · Programa de Formação</p>
+        <h2 class="s5-title">PROTOCOLO<br />AMANDA<br />PEREIRA</h2>
+        <p class="s5-desc">O que você viu hoje é só o começo. O programa completo te dá o método — do diagnóstico à prevenção cirúrgica — em 8 módulos presenciais.</p>
+      </div>
+      <div class="s5-modules">
+        <div class="s5-mod"><strong>Módulo 1–2</strong>Avaliação tridimensional e raciocínio clínico completo</div>
+        <div class="s5-mod"><strong>Módulo 3–4</strong>Método Schroth e S4D aplicados — caso a caso</div>
+        <div class="s5-mod"><strong>Módulo 5–6</strong>Colete Rigo-Chêneau 3D — indicação, manejo e resultados</div>
+        <div class="s5-mod"><strong>Módulo 7–8</strong>Protocolo integrado, documentação e cases clínicos reais</div>
+      </div>
+      <div class="s5-invest">
+        <p class="s5-invest-label">Investimento · Turma fechada</p>
+        <div class="s5-invest-val">R$ 3.500</div>
+        <p class="s5-invest-alt">ou parcelado · Certificado de Formação ao final</p>
+      </div>
+    </div>
+    <div class="s5-right">
+      <div class="s5-items">
+        <div class="s5-item">
+          <div class="s5-item-label">Formato</div>
+          <div class="s5-item-text">8 módulos presenciais · Sábados · A cada 2 meses · Goiânia, GO</div>
+        </div>
+        <div class="s5-item">
+          <div class="s5-item-label">Turma fechada</div>
+          <div class="s5-item-text">Máximo 12 fisioterapeutas · Atenção personalizada em cada módulo</div>
+        </div>
+        <div class="s5-item">
+          <div class="s5-item-label">Para quem é</div>
+          <div class="s5-item-text">Fisioterapeutas que já atendem escoliose e querem sair do improviso — ou que querem se especializar do zero com método</div>
+        </div>
+        <div class="s5-item">
+          <div class="s5-item-label">O que você leva</div>
+          <div class="s5-item-text">Protocolo completo · Materiais de avaliação · Raciocínio clínico aplicável amanhã na clínica · Certificado SOSORT-aligned</div>
+        </div>
+        <div class="s5-item">
+          <div class="s5-item-label">Vagas restantes</div>
+          <div class="s5-item-text" style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--wine2);">12 · Lista fecha em breve</div>
+        </div>
+      </div>
+      <div class="s5-cta" onclick="">
+        <div class="s5-cta-text">QUERO SABER MAIS — FALA COMIGO AGORA</div>
+        <div class="s5-cta-sub">@amanda_pereira_fisioterapeuta · linkme.bio/espacoclinicoviverbem</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6 CTA FINAL -->
+  <div class="slide" id="s6">
+    <div class="s6-top">
+      <span class="s6-brand">Dra. Amanda Pereira · Scoliosis Method · Espaço Clínico Viver Bem</span>
+    </div>
+    <div class="s6-mid">
+      <p class="s6-kicker">Bloco 6 · Fechamento</p>
+      <h2 class="s6-h2">
+        SEU PACIENTE<br />NÃO PODE ESPERAR<br />
+        <em>VOCÊ APRENDER<br />NO IMPROVISO.</em>
+      </h2>
+      <p class="s6-sub">O tratamento conservador com protocolo correto é o que separa a progressão cirúrgica da coluna que não opera. Você decide de qual lado quer estar.</p>
+    </div>
+    <div class="s6-bot">
+      <div>
+        <div class="s6-contact">DRA. AMANDA PEREIRA</div>
+        <div class="s6-contact" style="opacity:.4;font-size:14px;letter-spacing:.06em;">@amanda_pereira_fisioterapeuta</div>
+        <div class="s6-contact" style="opacity:.3;font-size:12px;letter-spacing:.06em;">Espaço Clínico Viver Bem · Goiânia, GO</div>
+      </div>
+      <div class="s6-vagas">
+        <div class="s6-vagas-num">12</div>
+        <div class="s6-vagas-label">Vagas · Turma fechada</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // CURSOR
+  const cur = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => { cur.style.left=e.clientX+'px'; cur.style.top=e.clientY+'px'; });
+
+  // TIMER
+  let seconds = 0, timerRunning = false, timerInterval;
+  function startTimer() {
+    if (!timerRunning) { timerRunning=true; timerInterval=setInterval(()=>{ seconds++; const m=Math.floor(seconds/60).toString().padStart(2,'0'), s=(seconds%60).toString().padStart(2,'0'); document.getElementById('timerDisplay').textContent=m+':'+s; },1000); }
+  }
+
+  // SLIDES
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let ci = 0;
+
+  const navEl = document.getElementById('navDots');
+  for (let i=0;i<total;i++) {
+    const d = document.createElement('div');
+    d.className='dot'+(i===0?' active':'');
+    d.addEventListener('click',()=>goTo(i));
+    navEl.appendChild(d);
+  }
+  document.getElementById('cTot').textContent=total;
+
+  function goTo(idx) {
+    startTimer();
+    slides[ci].classList.remove('active');
+    slides[ci].querySelectorAll('.anim').forEach(el=>{el.style.animation='none';void el.offsetWidth;});
+    ci=((idx%total)+total)%total;
+    slides[ci].classList.add('active');
+    slides[ci].querySelectorAll('.anim').forEach(el=>{el.style.animation='';});
+    document.getElementById('cCur').textContent=ci+1;
+    document.getElementById('pFill').style.width=((ci+1)/total*100)+'%';
+    document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===ci));
+    document.getElementById('hint').style.opacity=ci===total-1?'0':'1';
+    if (ci===1) startCounters();
+  }
+
+  function startCounters() {
+    document.querySelectorAll('[data-target]').forEach(el=>{
+      const target=parseInt(el.dataset.target), suffix=el.dataset.suffix||'', dur=900, start=performance.now();
+      function tick(now){ const p=Math.min((now-start)/dur,1), e=1-Math.pow(1-p,3); el.textContent=Math.round(e*target)+suffix; if(p<1)requestAnimationFrame(tick); }
+      requestAnimationFrame(tick);
+    });
+  }
+
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();goTo(ci+1);}
+    if(e.key==='ArrowLeft'){e.preventDefault();goTo(ci-1);}
+  });
+  document.getElementById('deck').addEventListener('click',e=>{
+    if(e.target.closest('.dot'))return;
+    goTo(e.clientX>window.innerWidth/2?ci+1:ci-1);
+  });
+
+  document.getElementById('pFill').style.width=(1/total*100)+'%';
+</script>
+</body>
+</html>
